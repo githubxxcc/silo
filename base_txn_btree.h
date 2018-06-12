@@ -328,7 +328,7 @@ void base_txn_btree<Transaction, P>::do_tree_put(
   INVARIANT(!expect_new || v); // makes little sense to remove() a key you expect
                                // to not be present, so we assert this doesn't happen
                                // for now [since this would indicate a suboptimality]
-  t.ensure_active();
+  t.ensure_active(); /* XXX(XC): where TX state is changed to active */
 
   if (unlikely(t.is_snapshot())) {
     const transaction_base::abort_reason r = transaction_base::ABORT_REASON_USER;
@@ -341,7 +341,7 @@ retry:
   if (expect_new) {
     auto ret = t.try_insert_new_tuple(this->underlying_btree, k, v, writer);
     INVARIANT(!ret.second || ret.first);
-    if (unlikely(ret.second)) {
+    if (unlikely(ret.second)) { /*XXX(XC): write interference */
       const transaction_base::abort_reason r = transaction_base::ABORT_REASON_WRITE_NODE_INTERFERENCE;
       t.abort_impl(r);
       throw transaction_abort_exception(r);

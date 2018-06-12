@@ -1,0 +1,23 @@
+** How Dependencies are being tracked? **
+A new tuple is inserted to the btree everytime when there is an operation. 
+It starts with funcitons call from the benchmark, which modifies the btree. 
+
+[Function Call]:
+tpcc.cc: load()/txn_new_order()
+- txn_btree.h : insert()/put()/update()... 
+    -> base_txn_btree.h : do_tree_put()
+        -> txn_impl.h : try_insert_new_tuple()
+
+
+
+** How dependencies are being enforced? ** 
+When tranaction is being committed, versions and locks are checked in the commit() function following the routine described by the protocol in paper. 
+
+[Function Call]:
+- txn_impl.h : commit() 
+
+
+** Persistency version implementation ** 
+SiloR related codes can be found int he txn_proto2_impl.cc/h files. 
+
+

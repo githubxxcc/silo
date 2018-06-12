@@ -6,3 +6,6 @@ core
 tags
 config.mk
 out-*
+
+# cscope
+*.out
